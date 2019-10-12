@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SlackPostStockApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(SlackPostStockApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(SlackPostStockApplication.class, args);
+  }
 }
