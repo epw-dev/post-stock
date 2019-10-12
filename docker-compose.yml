@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:12-alpine
     environment:
-      POSTGRES_USER: dev-user
+      POSTGRES_USER: dev
       POSTGRES_PASSWORD: password
     ports:
       - 5432:5432

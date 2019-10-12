@@ -1,5 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:3306
-    username: dev-user
+    url: jdbc:postgresql://localhost:5432/dev
+    username: dev
     password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true

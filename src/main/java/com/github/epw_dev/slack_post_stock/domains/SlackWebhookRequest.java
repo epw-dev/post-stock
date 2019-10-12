@@ -8,7 +8,7 @@ import lombok.Data;
 public class SlackWebhookRequest implements ChallengeRequest, EventCallRequest {
   private String type;
   private String challenge;
-  private Event event;
+  private CallBackEvent event;
 
   public boolean typeIs(SlackWebhookType type) {
     return type.getValue().equals(this.type);

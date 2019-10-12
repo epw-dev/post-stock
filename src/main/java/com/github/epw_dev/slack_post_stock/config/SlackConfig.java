@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app.slack")
 public class SlackConfig {
   private String token;
+  private String targetChannelId;
 }

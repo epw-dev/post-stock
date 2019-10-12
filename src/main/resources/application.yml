@@ -4,6 +4,13 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+
 app:
-  spack:
-    token:
+  slack:
+    token: ${SLACK_TOKEN}
+    target-channel-id: ${STOCK_TARGET_CHANNLE_ID}

@@ -5,6 +5,7 @@ import com.github.epw_dev.slack_post_stock.domains.SlackWebhookRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,13 @@ public class WehbookController {
   @PostMapping
   public ResponseEntity index(@RequestBody SlackWebhookRequest req) {
     val hdl = handlers.getBy(req).orElseGet(EmptyHandler::new);
-    return hdl.apply(req);
+    try {
+      return hdl.apply(req);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("error occurred", e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   static class EmptyHandler implements Function<SlackWebhookRequest, ResponseEntity> {

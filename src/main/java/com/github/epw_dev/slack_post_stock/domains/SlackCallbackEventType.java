@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum SlackWebhookType {
-  UrlVerification("url_verification"),
-  EventCallback("event_callback");
+public enum SlackCallbackEventType {
+  Message("message");
 
   private String value;
 }
