@@ -24,11 +24,10 @@ public class WehbookController {
 
   @PostMapping
   public ResponseEntity index(@RequestBody SlackWebhookRequest req) {
-    val hdl = handlers.getBy(req).orElseGet(EmptyHandler::new);
     try {
+      val hdl = handlers.getBy(req).orElseGet(EmptyHandler::new);
       return hdl.apply(req);
     } catch (Exception e) {
-      e.printStackTrace();
       log.error("error occurred", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

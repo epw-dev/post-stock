@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-public class ValueObjectSerializer extends StdSerializer<HasIdValue> {
+public class ToTextSerializer extends StdSerializer<HasIdValue> {
 
-  ValueObjectSerializer() {
+  ToTextSerializer() {
     this(null);
   }
 
-  ValueObjectSerializer(Class<HasIdValue> cls) {
+  ToTextSerializer(Class<HasIdValue> cls) {
     super(cls);
   }
 

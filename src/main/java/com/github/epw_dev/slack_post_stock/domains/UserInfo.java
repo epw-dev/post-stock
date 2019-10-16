@@ -11,7 +11,7 @@ public class UserInfo {
   private String avatarUrl;
 
   @AllArgsConstructor
-  @JsonSerialize(using = ValueObjectSerializer.class)
+  @JsonSerialize(using = ToTextSerializer.class)
   public static class UserId implements HasIdValue {
     private String id;
 
