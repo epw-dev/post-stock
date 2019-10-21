@@ -1,10 +1,11 @@
 package com.github.epw_dev.slack_post_stock.domains;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserInfoRepository {
-  UserInfo getBy(UserInfo.UserId id);
 
-  void save(UserInfo user);
+  List<UserInfo> findAll();
 
-  String DB_REPOS_KEY = "dbUserInfoRepository";
-  String API_REPOS_KEY = "apiUserInfoRepository";
+  Optional<UserInfo> getBy(UserInfo.UserId id);
 }

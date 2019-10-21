@@ -24,9 +24,7 @@ public class DBPostMessageRepository implements PostMessageRepository {
 
   @Override
   public List<PostMessage> findAll() {
-    return dao.findAll().stream()
-        .map(this::dto2model)
-        .collect(Collectors.toList());
+    return dao.findAll().stream().map(this::dto2model).collect(Collectors.toList());
   }
 
   @Transactional
@@ -40,7 +38,9 @@ public class DBPostMessageRepository implements PostMessageRepository {
   }
 
   PostMessage dto2model(PostsDto dto) {
-    val user = userRepos.getBy(new UserInfo.UserId(dto.getUserId()));
-    return new PostMessage(dto.getId(), dto.getText(), user, dto.getCreatedAt());
+    return userRepos
+        .getBy(new UserInfo.UserId(dto.getUserId()))
+        .map(user -> new PostMessage(dto.getId(), dto.getText(), user, dto.getCreatedAt()))
+        .orElseThrow(() -> new RuntimeException(("user not found.")));
   }
 }

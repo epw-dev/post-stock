@@ -2,6 +2,7 @@ package com.github.epw_dev.slack_post_stock.domains;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 @Value
@@ -12,6 +13,7 @@ public class UserInfo {
 
   @AllArgsConstructor
   @JsonSerialize(using = ToTextSerializer.class)
+  @EqualsAndHashCode
   public static class UserId implements HasIdValue {
     private String id;
 

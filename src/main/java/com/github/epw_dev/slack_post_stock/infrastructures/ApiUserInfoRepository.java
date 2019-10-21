@@ -12,9 +12,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Slf4j
 @AllArgsConstructor
-@Repository(UserInfoRepository.API_REPOS_KEY)
+@Repository
 public class ApiUserInfoRepository implements UserInfoRepository {
 
   private SlackConfig config;
@@ -22,34 +26,37 @@ public class ApiUserInfoRepository implements UserInfoRepository {
   private RestTemplate restTemplate;
 
   @Override
-  public UserInfo getBy(UserInfo.UserId id) {
+  public List<UserInfo> findAll() {
     val url =
-        UriComponentsBuilder.fromUriString("https://slack.com/api/users.info")
+        UriComponentsBuilder.fromUriString("https://slack.com/api/users.list")
             .queryParam("token", config.getToken())
-            .queryParam("user", id.asText())
             .toUriString();
-    val res = restTemplate.getForEntity(url, UsersInfoResponse.class);
+    val res = restTemplate.getForEntity(url, UsersListResponse.class);
     val body = res.getBody();
-    log.info(body.toString());
     if (!body.ok) {
       throw new RuntimeException(
           String.format("url: %s, sc: %s, reason: %s", url, res.getStatusCode(), body.error));
     }
-    val user = body.user;
-    return new UserInfo(
-        new UserInfo.UserId(user.id), user.profile.displayName, user.profile.imageOriginal);
+    return body.members.stream()
+        .map(UsersListResponse.UserInfoData::toModel)
+        .collect(Collectors.toList());
   }
 
   @Override
-  public void save(UserInfo user) {
-    throw new UnsupportedOperationException();
+  public Optional<UserInfo> getBy(UserInfo.UserId id) {
+    for (val user : this.findAll()) {
+      if (user.getId().equals(id)) {
+        return Optional.of(user);
+      }
+    }
+    return Optional.empty();
   }
 
   @Data
-  public static class UsersInfoResponse {
+  public static class UsersListResponse {
     private boolean ok;
     private String error;
-    private UserInfoData user;
+    private List<UserInfoData> members;
 
     @Data
     public static class UserInfoData {
@@ -63,6 +70,11 @@ public class ApiUserInfoRepository implements UserInfoRepository {
 
         @JsonProperty("image_original")
         private String imageOriginal;
+      }
+
+      UserInfo toModel() {
+        val userId = new UserInfo.UserId(this.id);
+        return new UserInfo(userId, this.profile.displayName, this.profile.imageOriginal);
       }
     }
   }
