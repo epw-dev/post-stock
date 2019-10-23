@@ -7,5 +7,5 @@ public interface UserInfoRepository {
 
   List<UserInfo> findAll();
 
-  Optional<UserInfo> getBy(UserInfo.UserId id);
+  Optional<UserInfo> findBy(UserInfo.UserId id);
 }

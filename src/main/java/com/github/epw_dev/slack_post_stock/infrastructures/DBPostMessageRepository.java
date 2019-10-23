@@ -39,7 +39,7 @@ public class DBPostMessageRepository implements PostMessageRepository {
 
   PostMessage dto2model(PostsDto dto) {
     return userRepos
-        .getBy(new UserInfo.UserId(dto.getUserId()))
+        .findBy(new UserInfo.UserId(dto.getUserId()))
         .map(user -> new PostMessage(dto.getId(), dto.getText(), user, dto.getCreatedAt()))
         .orElseThrow(() -> new RuntimeException(("user not found.")));
   }

@@ -4,27 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.epw_dev.slack_post_stock.config.SlackConfig;
 import com.github.epw_dev.slack_post_stock.domains.UserInfo;
 import com.github.epw_dev.slack_post_stock.domains.UserInfoRepository;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@AllArgsConstructor
 @Repository
 public class ApiUserInfoRepository implements UserInfoRepository {
 
-  private SlackConfig config;
+  @Lazy @Resource private UserInfoRepository self;
 
-  private RestTemplate restTemplate;
+  @Autowired private SlackConfig config;
 
+  @Autowired private RestTemplate restTemplate;
+
+  @Cacheable("users.list")
   @Override
   public List<UserInfo> findAll() {
     val url =
@@ -37,14 +42,17 @@ public class ApiUserInfoRepository implements UserInfoRepository {
       throw new RuntimeException(
           String.format("url: %s, sc: %s, reason: %s", url, res.getStatusCode(), body.error));
     }
+    log.info("find all");
     return body.members.stream()
         .map(UsersListResponse.UserInfoData::toModel)
         .collect(Collectors.toList());
   }
 
+  @Cacheable("users.info")
   @Override
-  public Optional<UserInfo> getBy(UserInfo.UserId id) {
-    for (val user : this.findAll()) {
+  public Optional<UserInfo> findBy(UserInfo.UserId id) {
+    log.info(id.asText());
+    for (val user : this.self.findAll()) {
       if (user.getId().equals(id)) {
         return Optional.of(user);
       }

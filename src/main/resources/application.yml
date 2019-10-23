@@ -10,6 +10,11 @@ spring:
       ddl-auto: update
       show-sql: true
 
+  cache:
+    cache-names: users.info,users.list
+    caffeine:
+      spec: expireAfterAccess=60s
+
 app:
   slack:
     token: ${SLACK_TOKEN}
